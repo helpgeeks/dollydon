@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Dolly Don — Official Website</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #08080A; display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+    #__bundler_loading { position: fixed; bottom: 20px; right: 20px; font: 13px/1.4 -apple-system, BlinkMacSystemFont, sans-serif; color: #666; background: #fff; padding: 8px 14px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.12); z-index: 10000; }
+    #__bundler_thumbnail { position: fixed; inset: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #08080A; z-index: 9999; }
+    #__bundler_thumbnail svg { width: 100%; height: 100%; object-fit: contain; }
+    #__bundler_placeholder { color: #999; font-size: 14px; }
+  </style>
+  <noscript>
+    <style>#__bundler_loading { display: none; }</style>
+    <div style="position:fixed;bottom:12px;left:12px;font:13px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#999;background:rgba(255,255,255,0.9);padding:6px 12px;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,0.08);z-index:10000;">
+      This page requires JavaScript to display.
+    </div>
+  </noscript>
+</head>
+<body>
+<form name="challenge-entry" method="POST" data-netlify="true" netlify-honeypot="bot-field" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
+  <input type="hidden" name="form-name" value="challenge-entry">
+  <input type="text" name="name">
+  <input type="email" name="email">
+  <input type="hidden" name="subject" value="Dolly Don Challenge Entry">
+  <p><label>Don’t fill this out: <input name="bot-field"></label></p>
+</form>
+  <div id="__bundler_thumbnail">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#08080A"></rect>
+    <text x="600" y="400" text-anchor="middle" dominant-baseline="middle" font-family="Georgia, 'Bodoni Moda', serif" font-size="130" letter-spacing="10" fill="#F5F1E9">DD</text>
+    <rect x="480" y="470" width="240" height="2" fill="#C9A96A"></rect>
+  </svg>
+</div>
+  <div id="__bundler_loading">Unpacking...</div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      const loading = document.getElementById('__bundler_loading');
+      function setStatus(msg) { if (loading) loading.textContent = msg; }
+
+      const FONT_MIME = /^(font[/]|application[/](x-)?font-|application[/]vnd\.ms-fontobject)/i;
+      const MIME_TOKEN = /^[\w.+-]+[/][\w.+-]+$/;
+      function toBase64(bytes) {
+        let bin = '';
+        for (let i = 0; i < bytes.length; i += 0x8000) {
+          bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+        }
+        return btoa(bin);
+      }
+
+      window.addEventListener('error', function(e) {
+        if (!e.message && !e.error && e.target && e.target !== window) {
+          console.warn('[bundle] resource failed to load:', e.target.tagName, String(e.target.src || e.target.href || ''));
+          return;
+        }
+        var p = document.body || document.documentElement;
+        var d = document.getElementById('__bundler_err') || p.appendChild(document.createElement('div'));
+        d.id = '__bundler_err';
+        d.style.cssText = 'position:fixed;bottom:12px;left:12px;right:12px;font:12px/1.4 ui-monospace,monospace;background:#2a1215;color:#ff8a80;padding:10px 14px;border-radius:8px;border:1px solid #5c2b2e;z-index:99999;white-space:pre-wrap;max-height:40vh;overflow:auto';
+        d.textContent = (d.textContent ? d.textContent + String.fromCharCode(10) : '') + '[bundle] ' + (e.message || e.type) + (e.filename ? ' (' + e.filename.slice(0, 60) + ':' + e.lineno + ')' : '');
+      }, true);
+
+      try {
+        const manifestEl = document.querySelector('script[type="__bundler/manifest"]');
+        const templateEl = document.querySelector('script[type="__bundler/template"]');
+        if (!manifestEl || !templateEl) {
+          setStatus('Error: missing bundle data');
+          console.error('[bundler] Missing script tags — manifestEl:', !!manifestEl, 'templateEl:', !!templateEl);
+          return;
+        }
+
+        const manifest = JSON.parse(manifestEl.textContent);
+        let template = JSON.parse(templateEl.textContent);
+
+        const pageOrderEl = document.querySelector('script[type="__bundler/page_order"]');
+        const pageOrder = pageOrderEl ? JSON.parse(pageOrderEl.textContent) : [];
+        const pageSet = new Set(pageOrder);
+        const pageTexts = {};
+        const OWN_TARGET = /^https?:[/][/]/.test(window.origin || '') ? window.origin : '*';
+        function trustedOrigin(e) {
+          if (e.origin === window.origin) return true;
+          return ((e.origin === 'null' && (window.origin === 'file://' || window.location.protocol === 'file:')) || (/^file:/.test(e.origin) && window.origin === 'null'));
+        }
+        const isPageRoot = pageOrder.length > 0;
+        const blobUrls = {};
+        const resourceBlobs = {};
+        const UUID_SHAPE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+        const pendingFrames = {};
+        const pendingRelays = {};
+        function mountPage(el, frag, text) {
+          const pageBlob = new Blob([text], { type: 'text/html' });
+          const u = URL.createObjectURL(pageBlob);
+          resourceBlobs[u] = pageBlob;
+          el.src = u + frag;
+        }
+        function deliverPage(uuid, text) {
+          const frames = pendingFrames[uuid];
+          delete pendingFrames[uuid];
+          if (frames) for (const f of frames) mountPage(f.el, f.frag, text);
+          const relays = pendingRelays[uuid];
+          delete pendingRelays[uuid];
+          if (relays) for (const cw of relays) { try { cw.postMessage({ __bundler_page: uuid, __bundler_text: text }, OWN_TARGET); } catch (err) {} }
+        }
+        function ownFrameWindows() {
+          const out = [];
+          for (const f of Array.from(document.querySelectorAll('iframe'))) { try { if (f.contentWindow) out.push(f.contentWindow); } catch (err) {} }
+          return out;
+        }
+        window.addEventListener('message', function (e) {
+          const d = e.data;
+          if (!d || typeof d !== 'object' || !e.source) return;
+          if (!trustedOrigin(e)) return;
+          if (d.__bundler_page && typeof d.__bundler_text === 'string') {
+            if (isPageRoot || !pageSet.has(d.__bundler_page)) return;
+            deliverPage(d.__bundler_page, d.__bundler_text);
+          }
+        });
+
+        const assetMap = {};
+        for (const [uuid, info] of Object.entries(manifest.assets || {})) {
+          if (!info || !info.data) continue;
+          const bytes = Uint8Array.from(atob(info.data), c => c.charCodeAt(0));
+          const blob = new Blob([bytes], { type: info.mime || 'application/octet-stream' });
+          const url = URL.createObjectURL(blob);
+          resourceBlobs[url] = blob;
+          assetMap[uuid] = url;
+        }
+        template = template.replace(/\b(?:src|href)="([0-9a-f-]{36})"/g, function(_, uuid) { return assetMap[uuid] ? 'src="' + assetMap[uuid] + '"' : _; });
+        template = template.replace(/url\((['"]?)([0-9a-f-]{36})\1\)/g, function(_, q, uuid) { return assetMap[uuid] ? 'url(' + q + assetMap[uuid] + q + ')' : _; });
+        document.body.innerHTML = template;
+        const scripts = Array.from(document.body.querySelectorAll('script'));
+        for (const oldScript of scripts) {
+          if (oldScript.type === 'text/x-dc' || oldScript.dataset.dcScript !== undefined) continue;
+          if (oldScript.src) { const s = document.createElement('script'); s.src = oldScript.src; s.async = false; oldScript.replaceWith(s); }
+        }
+        const dcScripts = Array.from(document.body.querySelectorAll('script[type="text/x-dc"]'));
+        const extScripts = Array.from(document.querySelectorAll('script[data-bundler-ext]'));
+        for (const src of extScripts) { const s = document.createElement('script'); s.src = src.getAttribute('src'); document.head.appendChild(s); }
+        window.__DOLLY_DON_BUNDLE__ = { manifest, pageOrder, blobUrls, resourceBlobs };
+        if (loading) loading.style.display = 'none';
+      } catch (err) {
+        setStatus('Error: ' + (err && err.message ? err.message : String(err)));
+        console.error('[bundler] unpack failed', err);
+      }
+    });
+  </script>
+
+  <script type="__bundler/manifest">REPLACE_MANIFEST</script>
+  <script type="__bundler/template">REPLACE_TEMPLATE</script>
+
+<script>
+(function () {
+  function bindChallengeForm() {
+    var form = document.querySelector('form[data-challenge-form]');
+    if (!form || form.dataset.bound === 'true') return;
+    form.dataset.bound = 'true';
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      var button = form.querySelector('button[type="submit"]');
+      var status = form.querySelector('[data-form-status]');
+      if (button) { button.disabled = true; button.textContent = 'Sending…'; }
+      var body = new URLSearchParams(new FormData(form));
+      fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body.toString() })
+        .then(function (response) {
+          if (!response.ok) throw new Error('Submission failed');
+          form.querySelectorAll('input:not([type="hidden"])').forEach(function (input) { input.value = ''; });
+          if (button) { button.textContent = 'You’re In'; }
+          if (status) status.style.opacity = '1';
+        })
+        .catch(function () {
+          if (button) { button.disabled = false; button.textContent = 'Try Again'; }
+          if (status) { status.textContent = 'Something went wrong. Please try again.'; status.style.opacity = '1'; }
+        });
+    });
+  }
+  bindChallengeForm();
+  new MutationObserver(bindChallengeForm).observe(document.body, { childList: true, subtree: true });
+})();
+</script>
+</body></html>
